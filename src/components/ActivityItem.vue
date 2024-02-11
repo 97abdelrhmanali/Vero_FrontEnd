@@ -100,17 +100,22 @@ export default{
             var screen = document.getElementById("workspace")
             await html2canvas(screen).then((canvas)=>{
                 const baseurl = canvas.toDataURL("image/png");
+                let a = document.createElement('a')
+                a.href = baseurl
+                a.download ='someFileName.png'
+                a.click();
                 var fileData = this.dataURLtoFile(baseurl, "imageName.jpg");
                 this.output = fileData
+
                 //console.log("Here is JavaScript File Object",fileData)
-                    //fileArr.push(fileData)
+                //fileArr.push(fileData)
                 
             });
-            console.log(this.output)
+            let file = this.output
             try {
                 await axios.post("http://127.0.0.1:8000/api/image",
                 {
-                    image:this.output
+                    image:{0: file , length:1}
                 });
                 console.log("sss")
             } catch (error) {
@@ -119,6 +124,7 @@ export default{
         },
 
         async previewFiles(event) {
+            console.log(event.target.files)
             var reader = new FileReader();
             reader.addEventListener('load',()=>{
                 this.image = reader.result;
