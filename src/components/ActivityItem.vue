@@ -72,50 +72,24 @@ export default{
         };
     },
 
-    // computed(){
-    //     console.log(this.image)
-    // },
-
-    // beforeUpdate(){
-    //     console.log(this.image)
-    // },
-
     methods:{
-        dataURLtoFile(dataurl, filename) {
-        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-         while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-        }
-    return new File([u8arr], filename, {type:mime});
-    },
-
-
-
-
 
         async print() {
 
-
             var screen = document.getElementById("workspace")
-            await html2canvas(screen).then((canvas)=>{
+                await  html2canvas(screen).then((canvas)=>{
                 const baseurl = canvas.toDataURL("image/png");
                 let a = document.createElement('a')
                 a.href = baseurl
                 a.download ='someFileName.png'
                 a.click();
-                var fileData = this.dataURLtoFile(baseurl, "imageName.jpg");
-                this.output = fileData
-
-                //console.log("Here is JavaScript File Object",fileData)
-                //fileArr.push(fileData)
-                
+                this.output = baseurl.toString()
             });
-            let file = this.output
+            console.log(this.output)
             try {
                 await axios.post("http://127.0.0.1:8000/api/image",
                 {
-                    image:{0: file , length:1}
+                    image: this.output
                 });
                 console.log("sss")
             } catch (error) {
@@ -129,10 +103,10 @@ export default{
             reader.addEventListener('load',()=>{
                 this.image = reader.result;
                 this.items.push(this.image)
-                this.items.forEach(element => {
-                    console.log("items")
-                    console.log(element)
-                });
+                // this.items.forEach(element => {
+                //     // console.log("items")
+                //     // console.log(element)
+                // });
             })
             reader.readAsDataURL(event.target.files[0]);
         }
